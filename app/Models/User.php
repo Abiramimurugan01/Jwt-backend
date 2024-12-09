@@ -1,19 +1,16 @@
 <?php
 
 namespace App\Models;
-
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-// use Illuminate\Database\Eloquent\Factories\HasFactory;
+ 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
-
-// use Illuminate\Database\Eloquent\Model;
-// use Tymon\JWTAuth\Contracts\JWTSubject;
-
-class User extends Authenticatable
+use Tymon\JWTAuth\Contracts\JWTSubject;  // Add this import
+ 
+class User extends Authenticatable implements JWTSubject  // Implement JWTSubject interface
 {
-    use HasApiTokens,Notifiable;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -45,4 +42,19 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();  // Typically the primary key (usually 'id')
+    }
+ 
+    /**
+     * Get the custom claims for the JWT payload.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 }
